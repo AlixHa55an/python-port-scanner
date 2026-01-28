@@ -33,3 +33,12 @@ This behavior mimics the basic technique used by professional network scanning t
 1. Run the program:
    ```bash
    python scanner.py
+
+## 🔄 Version 2 — Port Range Scanning
+This version extends the scanner to support scanning a full range of ports instead of a single port. It measures scan duration and displays a summary of all detected open ports, making it more useful for basic network auditing and system hardening.
+
+### New Features
+- Scan a user-defined port range
+- Summary of open ports found
+- Scan duration tracking
+- Improved error handling   
