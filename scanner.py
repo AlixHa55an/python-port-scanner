@@ -1,4 +1,5 @@
 import socket
+import threading
 import datetime
 
 SERVICES = {
@@ -15,6 +16,8 @@ SERVICES = {
 3389: "RDP"
 }
 
+print_lock = threading.Lock()
+
 def port_scan(ip,port,open_port):
 
     try:
@@ -26,8 +29,10 @@ def port_scan(ip,port,open_port):
 
        if result == 0:
         services = SERVICES.get(port,"Unknown Service")
-        print(f"[OPEN] port{port},({services})") 
-        open_port.append((port,services))
+
+        with print_lock:
+            print(f"[OPEN] port{port},({services})") 
+            open_port.append((port,services))
         
        sock.close()  
     except:
@@ -35,7 +40,7 @@ def port_scan(ip,port,open_port):
 
 
 def main():
-   print("****Port Range Scanner****")
+   print("=== FAST MULTI-THREADED PORT SCANNER ===")
 
    IP = input("Enter your IP address :\n")
 
@@ -52,9 +57,19 @@ def main():
    start_time = datetime.datetime.now()
 
    open_port = []
+   Threads = []
 
-   for port in range(start_port,end_port + 1):
-      port_scan(IP,port,open_port)
+   for port in range(start_port, end_port + 1):
+    
+      thread = threading.Thread(
+        target=port_scan,
+        args=(IP, port, open_port)
+       )
+      Threads.append(thread)
+      thread.start()
+
+   for Thread in Threads:
+      thread.join()   
 
    end_time = datetime.datetime.now()
 
